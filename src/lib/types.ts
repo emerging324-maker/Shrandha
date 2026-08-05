@@ -1,0 +1,20 @@
+export type Student = {
+  studentId: string;
+  timestamp: string;
+  name: string;
+  email: string;
+  phone: string;
+  course: string;
+  college: string;
+  degree: string;
+  department: string;
+  year: string;
+  city: string;
+  state: string;
+  linkedin: string;
+  github: string;
+  resumeLink: string;
+  paymentScreenshot: string;
+  status: "Pending" | "Approved" | "Rejected";
+  remarks: string;
+};
