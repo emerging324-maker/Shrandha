@@ -73,7 +73,7 @@ export default function Home() {
       </section>
 
       {/* COURSES PREVIEW */}
-      <section className="relative py-24 border-t border-line bg-surface">
+      <section className="relative py-24 border-t border-line">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="flex items-end justify-between flex-wrap gap-6">
             <SectionHeading eyebrow="Programs" title="Ten tracks. One standard of rigor." />
