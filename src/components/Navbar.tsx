@@ -39,7 +39,7 @@ export function Navbar() {
     >
       <nav className="mx-auto max-w-7xl px-5 md:px-8 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 focus-ring rounded-md">
-          <Image src="/images/logo.png" alt="Shrandha Labs" width={34} height={34} className="rounded-md" />
+          <Image src="/images/logo-mark.png" alt="Shrandha Labs" width={40} height={40} className="shrink-0" />
           <span className="font-display font-semibold text-lg tracking-tight">Shrandha Labs</span>
         </Link>
 
