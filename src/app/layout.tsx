@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
+import { SiteBackground } from "@/components/SiteBackground";
 import { Toaster } from "react-hot-toast";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", weight: ["400", "500", "600", "700", "800"] });
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <Loader />
+        <SiteBackground />
         <Navbar />
         <main className="pt-20">{children}</main>
         <Footer />
