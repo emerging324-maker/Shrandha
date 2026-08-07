@@ -37,7 +37,7 @@ export default function AdminLogin() {
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-5">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
-          <Image src="/images/logo.png" alt="Shrandha Labs" width={48} height={48} className="rounded-lg" />
+          <Image src="/images/logo-mark.png" alt="Shrandha Labs" width={56} height={56} className="shrink-0" />
           <h1 className="mt-4 font-display font-semibold text-2xl">Admin Login</h1>
           <p className="text-sm text-muted mt-1">Sign in to manage registrations</p>
         </div>
