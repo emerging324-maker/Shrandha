@@ -35,7 +35,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-5 md:px-8 py-16 grid grid-cols-2 md:grid-cols-5 gap-10">
         <div className="col-span-2">
           <Link href="/" className="flex items-center gap-2 mb-4">
-            <Image src="/images/logo.png" alt="Shrandha Labs" width={32} height={32} className="rounded-md" />
+            <Image src="/images/logo-mark.png" alt="Shrandha Labs" width={38} height={38} className="shrink-0" />
             <span className="font-display font-semibold text-lg">Shrandha Labs</span>
           </Link>
           <p className="text-muted text-sm max-w-xs">Learn. Build. Achieve. Industry-ready internship programs for students who want to build real things, not just certificates.</p>
