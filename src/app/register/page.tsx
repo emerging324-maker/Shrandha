@@ -20,7 +20,7 @@ type FormState = {
   paymentFile: File | null;
 };
 
-function fileToBase64(file: File): Promise<string> {
+function fileToBase64(file: File | Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve((reader.result as string).split(",")[1]);
@@ -29,10 +29,35 @@ function fileToBase64(file: File): Promise<string> {
   });
 }
 
+// Phone screenshots are routinely 3-8MB, and that whole payload has to be
+// base64-encoded, sent over the network, and written to Drive by Apps Script —
+// which is the biggest single driver of slow submissions. Downscaling to a
+// max width and re-encoding as JPEG cuts that dramatically with no visible
+// quality loss for a payment-confirmation screenshot.
+async function compressImage(file: File, maxWidth = 1280, quality = 0.75): Promise<File> {
+  if (!file.type.startsWith("image/") || file.type === "image/gif") return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, maxWidth / bitmap.width);
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob: Blob | null = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+    if (!blob || blob.size >= file.size) return file; // not worth it, keep original
+    return new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" });
+  } catch {
+    return file; // compression failed — fall back to the original file
+  }
+}
+
 function RegisterForm() {
   const params = useSearchParams();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [progressMsg, setProgressMsg] = useState("");
   const [done, setDone] = useState<{ studentId: string } | null>(null);
   const [form, setForm] = useState<FormState>({
     name: "", email: "", phone: "",
@@ -83,9 +108,16 @@ function RegisterForm() {
     }
     setSubmitting(true);
     try {
-      const resumeBase64 = form.resumeFile ? await fileToBase64(form.resumeFile) : "";
-      const paymentBase64 = form.paymentFile ? await fileToBase64(form.paymentFile) : "";
+      setProgressMsg("Preparing your files…");
+      const compressedPayment = form.paymentFile ? await compressImage(form.paymentFile) : null;
 
+      setProgressMsg("Uploading resume…");
+      const resumeBase64 = form.resumeFile ? await fileToBase64(form.resumeFile) : "";
+
+      setProgressMsg("Uploading payment screenshot…");
+      const paymentBase64 = compressedPayment ? await fileToBase64(compressedPayment) : "";
+
+      setProgressMsg("Saving your registration — this can take up to a minute…");
       const res = await fetch(scriptUrl, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoids CORS preflight against Apps Script
@@ -96,7 +128,7 @@ function RegisterForm() {
           year: form.year, city: form.city, state: form.state,
           course: form.course, linkedin: form.linkedin, github: form.github,
           resumeFileName: form.resumeFile?.name, resumeBase64, resumeMimeType: form.resumeFile?.type,
-          paymentFileName: form.paymentFile?.name, paymentBase64, paymentMimeType: form.paymentFile?.type,
+          paymentFileName: compressedPayment?.name, paymentBase64, paymentMimeType: compressedPayment?.type,
         }),
       });
       const data = await res.json();
@@ -106,6 +138,7 @@ function RegisterForm() {
       toast.error("Registration failed. Please try again or contact us.");
     } finally {
       setSubmitting(false);
+      setProgressMsg("");
     }
   }
 
@@ -230,10 +263,13 @@ function RegisterForm() {
             className="inline-flex items-center gap-1.5 rounded-full bg-ink text-base px-6 py-2.5 text-sm font-medium hover:bg-cyan transition-colors focus-ring disabled:opacity-60"
           >
             {submitting && <LoaderCircle className="w-4 h-4 animate-spin" />}
-            Submit Registration
+            {submitting ? "Submitting…" : "Submit Registration"}
           </button>
         )}
       </div>
+      {submitting && progressMsg && (
+        <p className="mt-3 text-xs text-muted text-right font-mono">{progressMsg}</p>
+      )}
     </div>
   );
 }
