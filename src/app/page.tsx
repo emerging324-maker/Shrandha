@@ -18,11 +18,6 @@ export default function Home() {
     <>
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_60%,transparent_100%)]" />
-        <div className="grain-overlay" />
-        <Knot className="absolute -right-24 -top-16 w-[420px] h-[420px] opacity-[0.12] md:opacity-20" />
-        <Knot className="absolute -left-32 bottom-0 w-72 h-72 opacity-[0.06]" spin={false} />
-
         <div className="relative mx-auto max-w-7xl px-5 md:px-8 pt-20 pb-28 md:pt-28 md:pb-36">
           <Reveal>
             <Eyebrow>Applications open — 2026 batch</Eyebrow>
