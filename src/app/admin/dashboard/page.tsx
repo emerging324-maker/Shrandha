@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import {
   Users, CalendarCheck, BookOpen, Search, Download, FileSpreadsheet,
-  Pencil, Trash2, LogOut, X, Check, Ban, LoaderCircle, RefreshCw,
+  Pencil, Trash2, LogOut, X, Check, Ban, LoaderCircle, RefreshCw, CheckCircle2,
 } from "lucide-react";
 import { Student } from "@/lib/types";
 
@@ -245,14 +245,15 @@ export default function AdminDashboard() {
                 <th className="px-4 py-3">College</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Resume</th>
+                <th className="px-4 py-3">Payment</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="px-4 py-10 text-center text-muted"><LoaderCircle className="w-5 h-5 animate-spin mx-auto" /></td></tr>
+                <tr><td colSpan={7} className="px-4 py-10 text-center text-muted"><LoaderCircle className="w-5 h-5 animate-spin mx-auto" /></td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-10 text-center text-muted">No registrations found.</td></tr>
+                <tr><td colSpan={7} className="px-4 py-10 text-center text-muted">No registrations found.</td></tr>
               ) : (
                 filtered.map((s) => (
                   <tr key={s.studentId} className="border-b border-line/60 hover:bg-white/[0.02]">
@@ -270,6 +271,15 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-4 py-3">
                       {s.resumeLink ? <a href={s.resumeLink} target="_blank" rel="noopener noreferrer" className="text-cyan text-xs hover:underline">View</a> : <span className="text-xs text-muted">—</span>}
+                    </td>
+                    <td className="px-4 py-3">
+                      {s.paymentId ? (
+                        <span className="inline-flex items-center gap-1 text-xs text-cyan" title={s.paymentId}>
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Paid
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1.5">
