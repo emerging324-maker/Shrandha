@@ -14,7 +14,7 @@ export type Student = {
   linkedin: string;
   github: string;
   resumeLink: string;
-  paymentScreenshot: string;
+  paymentId: string;
   status: "Pending" | "Approved" | "Rejected";
   remarks: string;
 };
