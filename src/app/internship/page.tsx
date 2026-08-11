@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const includes = [
   { icon: Rocket, title: "Live Industry Projects", desc: "Real project briefs modeled on actual client and product work." },
-  { icon: ClipboardCheck, title: "Weekly Assignments", desc: "Structured deliverables every week to build skill in layers." },
+  { icon: ClipboardCheck, title: "Weekly Task + Activity", desc: "Every Monday: a topic and task. Task due Wednesday, a hands-on activity follows, due Friday." },
   { icon: Users2, title: "Hands-on Sessions", desc: "Guided live sessions with mentors, not pre-recorded lectures only." },
   { icon: FileCheck2, title: "Project Reviews", desc: "Mentor feedback on every submission before you move to the next module." },
   { icon: Award, title: "Internship Certificate", desc: "Awarded on successful completion of your track." },
@@ -47,13 +47,37 @@ export default function Internship() {
       </div>
 
       <div className="mt-24">
-        <SectionHeading eyebrow="Program Flow" title="How the 3 months break down" />
+        <SectionHeading eyebrow="Weekly Rhythm" title="How each week actually runs" />
+        <p className="mt-4 text-muted max-w-2xl">Same structure, every week, for the full internship — so you always know what's due and when.</p>
+        <div className="mt-12 grid md:grid-cols-4 gap-5">
+          {[
+            { day: "Monday", title: "Topic + Task", desc: "You get the week's learning topic along with a task based on it." },
+            { day: "Wednesday (EOD)", title: "Task Submission", desc: "Submit your task by end of day Wednesday." },
+            { day: "Wednesday–Friday", title: "Practical Activity", desc: "After your task, you get a hands-on activity based on the same topic." },
+            { day: "Friday (EOD)", title: "Activity Submission", desc: "Submit your activity by end of day Friday to close out the week." },
+          ].map((s, i) => (
+            <Reveal key={s.day} delay={i * 0.06}>
+              <Card className="h-full">
+                <span className="font-mono text-xs text-cyan tracking-widest">{s.day}</span>
+                <h3 className="mt-3 font-display font-semibold text-lg">{s.title}</h3>
+                <p className="mt-2 text-sm text-muted leading-relaxed">{s.desc}</p>
+              </Card>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal delay={0.2}>
+          <p className="mt-6 text-sm text-muted">This cycle repeats every week for the full 12–13 weeks. All topics, resources, and submission instructions are shared in your batch&apos;s WhatsApp group — that&apos;s your main channel for updates throughout the program.</p>
+        </Reveal>
+      </div>
+
+      <div className="mt-24">
+        <SectionHeading eyebrow="Program Length" title="12–13 weeks, start to finish" />
         <div className="mt-12 space-y-4">
           {[
-            { phase: "Weeks 1–2", title: "Foundations", desc: "Core concepts for your track, environment setup, first small assignment." },
-            { phase: "Weeks 3–8", title: "Build Phase", desc: "Weekly assignments and the main live project, with mentor review cycles." },
-            { phase: "Weeks 9–11", title: "Project Depth", desc: "Extend the project, handle edge cases, polish for a portfolio-ready result." },
-            { phase: "Week 12", title: "Wrap-up", desc: "Final review, certificate issuance, and recognition for top and consistent performers." },
+            { phase: "Weeks 1–2", title: "Foundations", desc: "Core concepts for your track, environment setup, first weekly cycle." },
+            { phase: "Weeks 3–10", title: "Build Phase", desc: "Weekly topic → task → activity cycles, with mentor review on every submission." },
+            { phase: "Weeks 11–12", title: "Project Depth", desc: "Extend your strongest work, handle edge cases, polish for a portfolio-ready result." },
+            { phase: "Week 12–13", title: "Wrap-up", desc: "Final review, certificate issuance, and recognition for top and consistent performers." },
           ].map((s, i) => (
             <Reveal key={s.phase} delay={i * 0.06}>
               <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-8 rounded-2xl glass p-6">
