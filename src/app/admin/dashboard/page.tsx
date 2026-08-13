@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import {
   Users, CalendarCheck, BookOpen, Search, Download, FileSpreadsheet,
@@ -166,6 +167,9 @@ export default function AdminDashboard() {
           <p className="text-sm text-muted mt-1">Manage internship registrations</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link href="/admin/dashboard/curriculum" className="inline-flex items-center gap-1.5 rounded-full glass px-4 py-2.5 text-sm hover:border-cyan/40 focus-ring">
+            <BookOpen className="w-4 h-4" /> Weekly Curriculum
+          </Link>
           <button onClick={loadStudents} className="inline-flex items-center gap-1.5 rounded-full glass px-4 py-2.5 text-sm hover:border-cyan/40 focus-ring">
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Refresh
           </button>
