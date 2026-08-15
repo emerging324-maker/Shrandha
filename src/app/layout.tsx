@@ -37,7 +37,8 @@ export const metadata: Metadata = {
     description: "Industry-ready internship programs with live projects and mentor reviews.",
     images: ["/images/logo.png"],
   },
-  icons: { icon: "/images/logo.png" },
+  // favicon / apple-icon are auto-detected from src/app/favicon.ico,
+  // src/app/icon.png, and src/app/apple-icon.png — no manual config needed.
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
