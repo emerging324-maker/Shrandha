@@ -277,13 +277,7 @@ export default function AdminDashboard() {
                       {s.resumeLink ? <a href={s.resumeLink} target="_blank" rel="noopener noreferrer" className="text-cyan text-xs hover:underline">View</a> : <span className="text-xs text-muted">—</span>}
                     </td>
                     <td className="px-4 py-3">
-                      {s.paymentId ? (
-                        <span className="inline-flex items-center gap-1 text-xs text-cyan" title={s.paymentId}>
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Paid
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted">—</span>
-                      )}
+                      {s.paymentScreenshot ? <a href={s.paymentScreenshot} target="_blank" rel="noopener noreferrer" className="text-cyan text-xs hover:underline">View</a> : <span className="text-xs text-muted">—</span>}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1.5">
