@@ -27,7 +27,7 @@ export default function Certificate() {
       <Reveal delay={0.1}>
         <div className="mt-12 rounded-2xl overflow-hidden border border-line glass p-2 md:p-3">
           <div className="relative w-full aspect-[1492/1054] rounded-xl overflow-hidden">
-            <Image src="/images/sample-certificate.jpg" alt="Sample Shrandha Labs internship completion certificate" fill style={{ objectFit: "contain" }} priority />
+            <Image src="/images/sample-certificate.jpeg" alt="Sample Shrandha Labs internship completion certificate" fill style={{ objectFit: "contain" }} priority />
           </div>
         </div>
         <p className="mt-3 text-xs text-muted text-center">Sample certificate — name, track, and dates are personalized to each intern.</p>
