@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles, Users, Award, Clock } from "lucide-react";
 import { Knot } from "@/components/Knot";
@@ -100,6 +101,29 @@ export default function Home() {
           <Link href="/courses" className="mt-10 md:hidden inline-flex items-center gap-1.5 text-sm text-cyan">
             View all courses <ArrowUpRight className="w-4 h-4" />
           </Link>
+        </div>
+      </section>
+
+      {/* CERTIFICATE PREVIEW */}
+      <section className="relative py-24 border-t border-line">
+        <div className="mx-auto max-w-7xl px-5 md:px-8 grid lg:grid-cols-2 gap-12 items-center">
+          <Reveal>
+            <Eyebrow>What You Earn</Eyebrow>
+            <h2 className="mt-4 font-display font-semibold text-3xl md:text-5xl tracking-tight">A certificate tied to real work, not a form.</h2>
+            <p className="mt-5 text-muted text-base md:text-lg leading-relaxed">Every certificate is verifiable, issued only after you complete your track's full 12-week program — weekly tasks, hands-on activities, and mentor review included.</p>
+            <div className="mt-8">
+              <Link href="/certificate" className="inline-flex items-center gap-1.5 text-sm text-cyan hover:gap-2.5 transition-all">
+                See the full certificate details <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <Link href="/certificate" className="block rounded-2xl overflow-hidden border border-line glass p-2 hover:border-cyan/40 transition-colors">
+              <div className="relative w-full aspect-[1492/1054] rounded-xl overflow-hidden">
+                <Image src="/images/sample-certificate.jpg" alt="Sample Shrandha Labs internship completion certificate" fill style={{ objectFit: "contain" }} />
+              </div>
+            </Link>
+          </Reveal>
         </div>
       </section>
 
