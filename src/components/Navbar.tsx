@@ -11,6 +11,7 @@ const links = [
   { href: "/about", label: "About" },
   { href: "/courses", label: "Courses" },
   { href: "/internship", label: "Internship" },
+  { href: "/certificate", label: "Certificate" },
   { href: "/testimonials", label: "Testimonials" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
