@@ -120,7 +120,7 @@ export default function Home() {
           <Reveal delay={0.1}>
             <Link href="/certificate" className="block rounded-2xl overflow-hidden border border-line glass p-2 hover:border-cyan/40 transition-colors">
               <div className="relative w-full aspect-[1492/1054] rounded-xl overflow-hidden">
-                <Image src="/images/sample-certificate.jpg" alt="Sample Shrandha Labs internship completion certificate" fill style={{ objectFit: "contain" }} />
+                <Image src="/images/sample-certificate.jpeg" alt="Sample Shrandha Labs internship completion certificate" fill style={{ objectFit: "contain" }} />
               </div>
             </Link>
           </Reveal>
