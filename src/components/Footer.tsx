@@ -8,6 +8,7 @@ const columns = [
     links: [
       { href: "/courses", label: "All Courses" },
       { href: "/internship", label: "Internship" },
+      { href: "/certificate", label: "Certificate" },
       { href: "/register", label: "Register" },
     ],
   },
@@ -41,8 +42,8 @@ export function Footer() {
           <p className="text-muted text-sm max-w-xs">Learn. Build. Achieve. Industry-ready internship programs for students who want to build real things, not just certificates.</p>
           <div className="flex items-center gap-3 mt-5">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:text-cyan transition-colors focus-ring" aria-label="Instagram"><Instagram className="w-4 h-4" /></a>
-            <a href="https://www.linkedin.com/in/shrandha-labs-5a24ba428/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:text-cyan transition-colors focus-ring" aria-label="LinkedIn"><Linkedin className="w-4 h-4" /></a>
-            <a href="mailto:admin@shrandhalabs.com" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:text-cyan transition-colors focus-ring" aria-label="Email"><Mail className="w-4 h-4" /></a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:text-cyan transition-colors focus-ring" aria-label="LinkedIn"><Linkedin className="w-4 h-4" /></a>
+            <a href="mailto:hello@shrandhalabs.com" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:text-cyan transition-colors focus-ring" aria-label="Email"><Mail className="w-4 h-4" /></a>
           </div>
         </div>
 
@@ -63,7 +64,7 @@ export function Footer() {
           <h4 className="font-mono text-xs tracking-[0.2em] uppercase text-slate mb-4">Reach Us</h4>
           <ul className="space-y-2.5 text-sm text-muted">
             <li className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> +91 90000 00000</li>
-            <li className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> admin@shrandhalabs.com</li>
+            <li className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> hello@shrandhalabs.com</li>
           </ul>
         </div>
       </div>
