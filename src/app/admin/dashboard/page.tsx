@@ -5,7 +5,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import {
   Users, CalendarCheck, BookOpen, Search, Download, FileSpreadsheet,
-  Pencil, Trash2, LogOut, X, Check, Ban, LoaderCircle, RefreshCw, CheckCircle2,
+  Pencil, Trash2, LogOut, X, Check, Ban, LoaderCircle, RefreshCw, CheckCircle2, Award,
 } from "lucide-react";
 import { Student } from "@/lib/types";
 
@@ -125,6 +125,31 @@ export default function AdminDashboard() {
       setConfirmDelete(null);
     } catch {
       toast.error("Delete failed");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function issueCertificate(s: Student) {
+    setBusyId(s.studentId);
+    try {
+      const res = await fetch("/api/admin/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "issueCertificate", studentId: s.studentId }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setStudents((prev) =>
+        prev.map((x) =>
+          x.studentId === s.studentId
+            ? { ...x, certificateId: data.certificateId, certificateIssuedDate: new Date().toISOString() }
+            : x
+        )
+      );
+      toast.success(`Certificate issued: ${data.certificateId}`);
+    } catch {
+      toast.error("Could not issue certificate");
     } finally {
       setBusyId(null);
     }
@@ -250,14 +275,15 @@ export default function AdminDashboard() {
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Resume</th>
                 <th className="px-4 py-3">Payment</th>
+                <th className="px-4 py-3">Certificate</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} className="px-4 py-10 text-center text-muted"><LoaderCircle className="w-5 h-5 animate-spin mx-auto" /></td></tr>
+                <tr><td colSpan={8} className="px-4 py-10 text-center text-muted"><LoaderCircle className="w-5 h-5 animate-spin mx-auto" /></td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-10 text-center text-muted">No registrations found.</td></tr>
+                <tr><td colSpan={8} className="px-4 py-10 text-center text-muted">No registrations found.</td></tr>
               ) : (
                 filtered.map((s) => (
                   <tr key={s.studentId} className="border-b border-line/60 hover:bg-white/[0.02]">
@@ -278,6 +304,23 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-4 py-3">
                       {s.paymentScreenshot ? <a href={s.paymentScreenshot} target="_blank" rel="noopener noreferrer" className="text-cyan text-xs hover:underline">View</a> : <span className="text-xs text-muted">—</span>}
+                    </td>
+                    <td className="px-4 py-3">
+                      {s.certificateId ? (
+                        <span className="inline-flex items-center gap-1 text-xs text-cyan font-mono" title={s.certificateId}>
+                          <Award className="w-3.5 h-3.5 shrink-0" /> {s.certificateId}
+                        </span>
+                      ) : s.status === "Approved" ? (
+                        <button
+                          disabled={busyId === s.studentId}
+                          onClick={() => issueCertificate(s)}
+                          className="text-xs text-amber hover:underline disabled:opacity-40"
+                        >
+                          Issue Certificate
+                        </button>
+                      ) : (
+                        <span className="text-xs text-muted">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1.5">
