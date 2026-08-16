@@ -17,4 +17,6 @@ export type Student = {
   paymentScreenshot: string;
   status: "Pending" | "Approved" | "Rejected";
   remarks: string;
+  certificateId: string;
+  certificateIssuedDate: string;
 };
