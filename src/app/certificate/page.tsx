@@ -60,6 +60,13 @@ export default function Certificate() {
           </div>
         </div>
       </Reveal>
+
+      <Reveal delay={0.2}>
+        <p className="mt-10 text-center text-sm text-muted">
+          Already have a certificate?{" "}
+          <Link href="/verify-certificate" className="text-cyan hover:underline">Verify it here</Link>
+        </p>
+      </Reveal>
     </div>
   );
 }
