@@ -2,12 +2,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createRoot } from "react-dom/client";
 import toast from "react-hot-toast";
 import {
   Users, CalendarCheck, BookOpen, Search, Download, FileSpreadsheet,
   Pencil, Trash2, LogOut, X, Check, Ban, LoaderCircle, RefreshCw, CheckCircle2, Award,
 } from "lucide-react";
 import { Student } from "@/lib/types";
+import { CertificateTemplate } from "@/components/CertificateTemplate";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -19,6 +21,8 @@ export default function AdminDashboard() {
   const [editing, setEditing] = useState<Student | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Student | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [certModal, setCertModal] = useState<Student | null>(null);
+  const [generatingCert, setGeneratingCert] = useState(false);
 
   async function loadStudents() {
     setLoading(true);
@@ -130,28 +134,88 @@ export default function AdminDashboard() {
     }
   }
 
-  async function issueCertificate(s: Student) {
-    setBusyId(s.studentId);
+  async function generateCertificatePdf(student: Student, name: string, domain: string, duration: string) {
+    setGeneratingCert(true);
     try {
-      const res = await fetch("/api/admin/students", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "issueCertificate", studentId: s.studentId }),
+      let certificateId = student.certificateId;
+      let issuedDateIso = student.certificateIssuedDate;
+
+      // Only issue a new ID if this student doesn't already have one —
+      // re-downloading later reuses the same ID rather than minting a new one.
+      if (!certificateId) {
+        const res = await fetch("/api/admin/students", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "issueCertificate", studentId: student.studentId }),
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        certificateId = data.certificateId;
+        issuedDateIso = new Date().toISOString();
+        setStudents((prev) =>
+          prev.map((x) => (x.studentId === student.studentId ? { ...x, certificateId, certificateIssuedDate: issuedDateIso! } : x))
+        );
+      }
+
+      const issuedDateLabel = new Date(issuedDateIso || Date.now()).toLocaleDateString("en-IN", {
+        day: "numeric", month: "long", year: "numeric",
       });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      setStudents((prev) =>
-        prev.map((x) =>
-          x.studentId === s.studentId
-            ? { ...x, certificateId: data.certificateId, certificateIssuedDate: new Date().toISOString() }
-            : x
+
+      // Render the certificate off-screen at full resolution, capture it,
+      // then drop it into a landscape PDF sized to match.
+      const container = document.createElement("div");
+      container.style.position = "fixed";
+      container.style.left = "-99999px";
+      container.style.top = "0";
+      document.body.appendChild(container);
+
+      const root = createRoot(container);
+      root.render(
+        <CertificateTemplate
+          name={name}
+          domain={domain}
+          duration={duration}
+          certificateId={certificateId!}
+          issuedDate={issuedDateLabel}
+        />
+      );
+
+      // Let fonts finish loading, and explicitly wait for every image in the
+      // template (the logo) before capturing — a fixed delay alone is a race
+      // condition and can produce a certificate with a missing logo.
+      await (document as any).fonts?.ready;
+      const images = Array.from(container.querySelectorAll("img"));
+      await Promise.all(
+        images.map((img) =>
+          img.complete
+            ? Promise.resolve()
+            : new Promise((resolve) => {
+                img.onload = resolve;
+                img.onerror = resolve;
+              })
         )
       );
-      toast.success(`Certificate issued: ${data.certificateId}`);
-    } catch {
-      toast.error("Could not issue certificate");
+      await new Promise((resolve) => setTimeout(resolve, 150));
+
+      const html2canvas = (await import("html2canvas")).default;
+      const { default: jsPDF } = await import("jspdf");
+
+      const target = container.querySelector("#certificate-template") as HTMLElement;
+      const canvas = await html2canvas(target, { scale: 2, backgroundColor: "#ffffff" });
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [1492, 1054] });
+      pdf.addImage(imgData, "PNG", 0, 0, 1492, 1054);
+      pdf.save(`${name.replace(/\s+/g, "_")}_Certificate_${certificateId}.pdf`);
+
+      root.unmount();
+      document.body.removeChild(container);
+      setCertModal(null);
+      toast.success("Certificate downloaded");
+    } catch (err) {
+      toast.error("Could not generate certificate");
     } finally {
-      setBusyId(null);
+      setGeneratingCert(false);
     }
   }
 
@@ -307,14 +371,17 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-4 py-3">
                       {s.certificateId ? (
-                        <span className="inline-flex items-center gap-1 text-xs text-cyan font-mono" title={s.certificateId}>
+                        <button
+                          onClick={() => setCertModal(s)}
+                          className="inline-flex items-center gap-1 text-xs text-cyan hover:underline font-mono"
+                          title={s.certificateId}
+                        >
                           <Award className="w-3.5 h-3.5 shrink-0" /> {s.certificateId}
-                        </span>
+                        </button>
                       ) : s.status === "Approved" ? (
                         <button
-                          disabled={busyId === s.studentId}
-                          onClick={() => issueCertificate(s)}
-                          className="text-xs text-amber hover:underline disabled:opacity-40"
+                          onClick={() => setCertModal(s)}
+                          className="text-xs text-amber hover:underline"
                         >
                           Issue Certificate
                         </button>
@@ -389,6 +456,87 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
+
+      {/* Certificate generation modal */}
+      {certModal && (
+        <CertificateModal
+          student={certModal}
+          generating={generatingCert}
+          onClose={() => setCertModal(null)}
+          onGenerate={generateCertificatePdf}
+        />
+      )}
+    </div>
+  );
+}
+
+function CertificateModal({
+  student,
+  generating,
+  onClose,
+  onGenerate,
+}: {
+  student: Student;
+  generating: boolean;
+  onClose: () => void;
+  onGenerate: (student: Student, name: string, domain: string, duration: string) => void;
+}) {
+  const [name, setName] = useState(student.name);
+  const [domain, setDomain] = useState(student.course);
+  const [duration, setDuration] = useState("12 Weeks");
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={onClose}>
+      <div className="w-full max-w-md rounded-2xl glass p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="font-display font-semibold text-lg flex items-center gap-2">
+            <Award className="w-5 h-5 text-amber" />
+            {student.certificateId ? "Download Certificate" : "Issue Certificate"}
+          </h3>
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/10 focus-ring"><X className="w-5 h-5" /></button>
+        </div>
+        <p className="text-xs text-muted mb-5">
+          {student.certificateId
+            ? "Certificate ID and issue date are already fixed — everything else is filled in below."
+            : "Certificate ID and issue date are generated automatically. Just confirm the details below."}
+        </p>
+
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-muted font-mono uppercase tracking-widest">Name</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-line bg-white/5 px-3.5 py-2.5 text-sm outline-none focus:border-cyan/50"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-muted font-mono uppercase tracking-widest">Internship Domain</label>
+            <input
+              value={domain}
+              onChange={(e) => setDomain(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-line bg-white/5 px-3.5 py-2.5 text-sm outline-none focus:border-cyan/50"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-muted font-mono uppercase tracking-widest">Duration</label>
+            <input
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-line bg-white/5 px-3.5 py-2.5 text-sm outline-none focus:border-cyan/50"
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={() => onGenerate(student, name, domain, duration)}
+          disabled={generating || !name || !domain || !duration}
+          className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink text-base px-6 py-3 text-sm font-medium hover:bg-cyan transition-colors disabled:opacity-60"
+        >
+          {generating ? <LoaderCircle className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          {generating ? "Generating…" : student.certificateId ? "Download PDF" : "Issue & Download PDF"}
+        </button>
+      </div>
     </div>
   );
 }
