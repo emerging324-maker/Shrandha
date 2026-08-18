@@ -19,4 +19,5 @@ export type Student = {
   remarks: string;
   certificateId: string;
   certificateIssuedDate: string;
+  batch: string;
 };
