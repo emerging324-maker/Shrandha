@@ -6,7 +6,7 @@ import { createRoot } from "react-dom/client";
 import toast from "react-hot-toast";
 import {
   Users, CalendarCheck, BookOpen, Search, Download, FileSpreadsheet,
-  Pencil, Trash2, LogOut, X, Check, Ban, LoaderCircle, RefreshCw, CheckCircle2, Award,
+  Pencil, Trash2, LogOut, X, Check, Ban, LoaderCircle, RefreshCw, CheckCircle2, Award, Layers,
 } from "lucide-react";
 import { Student } from "@/lib/types";
 import { CertificateTemplate } from "@/components/CertificateTemplate";
@@ -18,6 +18,7 @@ export default function AdminDashboard() {
   const [query, setQuery] = useState("");
   const [courseFilter, setCourseFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [batchFilter, setBatchFilter] = useState("All");
   const [editing, setEditing] = useState<Student | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Student | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -52,6 +53,10 @@ export default function AdminDashboard() {
   }, []);
 
   const courses = useMemo(() => ["All", ...Array.from(new Set(students.map((s) => s.course)))], [students]);
+  const batches = useMemo(
+    () => ["All", ...Array.from(new Set(students.map((s) => s.batch).filter(Boolean)))],
+    [students]
+  );
 
   const filtered = useMemo(() => {
     return students.filter((s) => {
@@ -60,9 +65,10 @@ export default function AdminDashboard() {
         [s.name, s.email, s.phone, s.college, s.studentId].some((f) => f?.toLowerCase().includes(query.toLowerCase()));
       const matchesCourse = courseFilter === "All" || s.course === courseFilter;
       const matchesStatus = statusFilter === "All" || s.status === statusFilter;
-      return matchesQuery && matchesCourse && matchesStatus;
+      const matchesBatch = batchFilter === "All" || s.batch === batchFilter;
+      return matchesQuery && matchesCourse && matchesStatus && matchesBatch;
     });
-  }, [students, query, courseFilter, statusFilter]);
+  }, [students, query, courseFilter, statusFilter, batchFilter]);
 
   const todayCount = useMemo(() => {
     const today = new Date().toDateString();
@@ -259,6 +265,9 @@ export default function AdminDashboard() {
           <Link href="/admin/dashboard/curriculum" className="inline-flex items-center gap-1.5 rounded-full glass px-4 py-2.5 text-sm hover:border-cyan/40 focus-ring">
             <BookOpen className="w-4 h-4" /> Weekly Curriculum
           </Link>
+          <Link href="/admin/dashboard/batches" className="inline-flex items-center gap-1.5 rounded-full glass px-4 py-2.5 text-sm hover:border-cyan/40 focus-ring">
+            <Layers className="w-4 h-4" /> Batches
+          </Link>
           <button onClick={loadStudents} className="inline-flex items-center gap-1.5 rounded-full glass px-4 py-2.5 text-sm hover:border-cyan/40 focus-ring">
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Refresh
           </button>
@@ -319,6 +328,9 @@ export default function AdminDashboard() {
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-xl border border-line bg-white/5 px-3.5 py-2.5 text-sm outline-none">
           {["All", "Pending", "Approved", "Rejected"].map((s) => <option key={s} value={s} className="bg-surface">{s}</option>)}
         </select>
+        <select value={batchFilter} onChange={(e) => setBatchFilter(e.target.value)} className="rounded-xl border border-line bg-white/5 px-3.5 py-2.5 text-sm outline-none">
+          {batches.map((b) => <option key={b} value={b} className="bg-surface">{b === "All" ? "All Batches" : b}</option>)}
+        </select>
         <button onClick={exportExcel} className="inline-flex items-center gap-1.5 rounded-full glass px-4 py-2.5 text-sm hover:border-cyan/40 focus-ring">
           <FileSpreadsheet className="w-4 h-4" /> Export Excel
         </button>
@@ -335,6 +347,7 @@ export default function AdminDashboard() {
               <tr className="border-b border-line text-left text-xs uppercase tracking-widest text-slate font-mono">
                 <th className="px-4 py-3">Student</th>
                 <th className="px-4 py-3">Course</th>
+                <th className="px-4 py-3">Batch</th>
                 <th className="px-4 py-3">College</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Resume</th>
@@ -345,9 +358,9 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8} className="px-4 py-10 text-center text-muted"><LoaderCircle className="w-5 h-5 animate-spin mx-auto" /></td></tr>
+                <tr><td colSpan={9} className="px-4 py-10 text-center text-muted"><LoaderCircle className="w-5 h-5 animate-spin mx-auto" /></td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={8} className="px-4 py-10 text-center text-muted">No registrations found.</td></tr>
+                <tr><td colSpan={9} className="px-4 py-10 text-center text-muted">No registrations found.</td></tr>
               ) : (
                 filtered.map((s) => (
                   <tr key={s.studentId} className="border-b border-line/60 hover:bg-white/[0.02]">
@@ -356,6 +369,9 @@ export default function AdminDashboard() {
                       <p className="text-xs text-muted">{s.email}</p>
                     </td>
                     <td className="px-4 py-3 text-muted">{s.course}</td>
+                    <td className="px-4 py-3">
+                      {s.batch ? <span className="text-xs text-slate">{s.batch}</span> : <span className="text-xs text-muted">Unassigned</span>}
+                    </td>
                     <td className="px-4 py-3 text-muted">{s.college}</td>
                     <td className="px-4 py-3">
                       <span className={`text-xs px-2.5 py-1 rounded-full ${
@@ -414,7 +430,7 @@ export default function AdminDashboard() {
               <button onClick={() => setEditing(null)} className="p-1 rounded-lg hover:bg-white/10 focus-ring"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-3">
-              {(["name", "email", "phone", "course", "college", "remarks"] as const).map((field) => (
+              {(["name", "email", "phone", "course", "batch", "college", "remarks"] as const).map((field) => (
                 <div key={field}>
                   <label className="text-xs text-muted font-mono uppercase tracking-widest">{field}</label>
                   <input
