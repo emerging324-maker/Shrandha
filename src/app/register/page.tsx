@@ -1,24 +1,26 @@
 "use client";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import {
   ChevronLeft, ChevronRight, UploadCloud, CheckCircle2, LoaderCircle,
-  User, GraduationCap, Rocket, CreditCard, PartyPopper, FileText, Image as ImageIcon,
+  User, GraduationCap, Rocket, PartyPopper, FileText, Clock, ArrowLeft, IdCard,
 } from "lucide-react";
 import { courses } from "@/lib/data";
 import { Eyebrow } from "@/components/ui";
 
-const STEPS = ["Personal", "Academic", "Program", "Payment", "Review"];
+// Flip this to true to re-open registration — no other changes needed.
+const REGISTRATION_OPEN = false;
+
+const STEPS = ["Personal", "Academic", "Program", "Review"];
 
 type FormState = {
   name: string; email: string; phone: string;
   college: string; degree: string; department: string; year: string; city: string; state: string;
   course: string; linkedin: string; github: string;
   resumeFile: File | null;
-  paymentFile: File | null;
 };
 
 function fileToBase64(file: File): Promise<string> {
@@ -30,41 +32,18 @@ function fileToBase64(file: File): Promise<string> {
   });
 }
 
-// Phone screenshots are routinely 3-8MB, and that whole payload has to be
-// base64-encoded, sent over the network, and written to Drive by Apps Script —
-// which is the biggest single driver of slow submissions. Downscaling to a
-// max width and re-encoding as JPEG cuts that dramatically with no visible
-// quality loss for a payment-confirmation screenshot.
-async function compressImage(file: File, maxWidth = 1280, quality = 0.75): Promise<File> {
-  if (!file.type.startsWith("image/") || file.type === "image/gif") return file;
-  try {
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, maxWidth / bitmap.width);
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(bitmap.width * scale);
-    canvas.height = Math.round(bitmap.height * scale);
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return file;
-    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const blob: Blob | null = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
-    if (!blob || blob.size >= file.size) return file;
-    return new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" });
-  } catch {
-    return file;
-  }
-}
-
 function RegisterForm() {
   const params = useSearchParams();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [progressMsg, setProgressMsg] = useState("");
   const [done, setDone] = useState<{ studentId: string } | null>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [form, setForm] = useState<FormState>({
     name: "", email: "", phone: "",
     college: "", degree: "", department: "", year: "", city: "", state: "",
     course: params.get("course") || "", linkedin: "", github: "",
-    resumeFile: null, paymentFile: null,
+    resumeFile: null,
   });
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -86,9 +65,6 @@ function RegisterForm() {
       if (!form.course) { toast.error("Select a course."); return false; }
       if (!form.resumeFile) { toast.error("Please upload your resume (PDF)."); return false; }
     }
-    if (step === 3) {
-      if (!form.paymentFile) { toast.error("Please upload your payment screenshot."); return false; }
-    }
     return true;
   }
 
@@ -100,21 +76,23 @@ function RegisterForm() {
     setStep((s) => Math.max(s - 1, 0));
   }
 
-  async function submit() {
+  function openConfirm() {
     if (!validateStep()) return;
+    setShowConfirm(true);
+  }
+
+  async function submit() {
+    setShowConfirm(false);
+    setSubmitting(true);
     const scriptUrl = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL;
     if (!scriptUrl) {
       toast.error("Registration backend is not configured yet. Please contact us directly.");
+      setSubmitting(false);
       return;
     }
-    setSubmitting(true);
     try {
       setProgressMsg("Uploading resume…");
       const resumeBase64 = form.resumeFile ? await fileToBase64(form.resumeFile) : "";
-
-      setProgressMsg("Uploading payment screenshot…");
-      const compressedPayment = form.paymentFile ? await compressImage(form.paymentFile) : null;
-      const paymentBase64 = compressedPayment ? await fileToBase64(compressedPayment) : "";
 
       setProgressMsg("Saving your registration…");
       const res = await fetch(scriptUrl, {
@@ -127,7 +105,6 @@ function RegisterForm() {
           year: form.year, city: form.city, state: form.state,
           course: form.course, linkedin: form.linkedin, github: form.github,
           resumeFileName: form.resumeFile?.name, resumeBase64, resumeMimeType: form.resumeFile?.type,
-          paymentFileName: compressedPayment?.name, paymentBase64, paymentMimeType: compressedPayment?.type,
         }),
       });
       const data = await res.json();
@@ -146,14 +123,14 @@ function RegisterForm() {
       <div className="mx-auto max-w-xl px-5 py-28 text-center">
         <PartyPopper className="w-12 h-12 text-amber mx-auto" />
         <h1 className="mt-6 font-display font-semibold text-3xl md:text-4xl">You&apos;re registered!</h1>
-        <p className="mt-4 text-muted">Your Student ID is <span className="text-cyan font-mono">{done.studentId}</span>. We&apos;ve sent a confirmation to your email — our team will review your payment and get back to you shortly.</p>
+        <p className="mt-4 text-muted">Your Student ID is <span className="text-cyan font-mono">{done.studentId}</span>. We&apos;ve sent a confirmation to your email — our team will review your application and get back to you shortly.</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-2xl px-5 md:px-8 py-16">
-      <Eyebrow>Registration · ₹150</Eyebrow>
+      <Eyebrow>Registration</Eyebrow>
       <h1 className="mt-4 font-display font-semibold text-3xl md:text-5xl tracking-tight">Register for the Internship</h1>
 
       {/* Stepper */}
@@ -217,22 +194,6 @@ function RegisterForm() {
               </div>
             )}
             {step === 3 && (
-              <div className="space-y-5">
-                <div className="flex items-center gap-2 text-cyan mb-2"><CreditCard className="w-5 h-5" /><span className="text-sm font-medium">Payment</span></div>
-                <div className="rounded-xl border border-line bg-white/5 p-5 text-center">
-                  <p className="text-xs text-muted">Registration Fee</p>
-                  <p className="mt-1 font-display text-3xl font-semibold text-gradient">₹150</p>
-                  <div className="mt-4 flex justify-center">
-                    <div className="rounded-xl bg-white p-3">
-                      <Image src="/images/upi-qr-sample.png" alt="UPI QR code" width={160} height={160} />
-                    </div>
-                  </div>
-                  <p className="mt-3 text-xs text-muted">Scan the QR or pay via UPI to <span className="text-ink font-mono">shrandhalabs@upi</span>, then upload your payment screenshot below.</p>
-                </div>
-                <FileField label="Payment Screenshot" icon={ImageIcon} file={form.paymentFile} accept="image/*" onChange={(f) => update("paymentFile", f)} />
-              </div>
-            )}
-            {step === 4 && (
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-cyan mb-2"><CheckCircle2 className="w-5 h-5" /><span className="text-sm font-medium">Review &amp; Submit</span></div>
                 <ReviewRow label="Name" value={form.name} />
@@ -241,7 +202,6 @@ function RegisterForm() {
                 <ReviewRow label="College" value={form.college} />
                 <ReviewRow label="Course" value={form.course} />
                 <ReviewRow label="Resume" value={form.resumeFile?.name || "—"} />
-                <ReviewRow label="Payment Screenshot" value={form.paymentFile?.name || "—"} />
               </div>
             )}
           </motion.div>
@@ -262,18 +222,54 @@ function RegisterForm() {
           </button>
         ) : (
           <button
-            onClick={submit}
+            onClick={openConfirm}
             disabled={submitting}
             className="inline-flex items-center gap-1.5 rounded-full bg-ink text-base px-6 py-2.5 text-sm font-medium hover:bg-cyan transition-colors focus-ring disabled:opacity-60"
           >
             {submitting && <LoaderCircle className="w-4 h-4 animate-spin" />}
-            {submitting ? "Submitting…" : "Submit Registration"}
+            {submitting ? "Submitting…" : "Register"}
           </button>
         )}
       </div>
       {submitting && progressMsg && (
         <p className="mt-3 text-xs text-muted text-right font-mono">{progressMsg}</p>
       )}
+
+      {/* Confirmation popup — shown right before the actual submission fires */}
+      <AnimatePresence>
+        {showConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-5"
+            onClick={() => setShowConfirm(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 16, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.98 }}
+              className="w-full max-w-sm rounded-2xl glass p-7 text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="w-12 h-12 rounded-full bg-amber/10 flex items-center justify-center mx-auto">
+                <IdCard className="w-6 h-6 text-amber" />
+              </div>
+              <h3 className="mt-4 font-display font-semibold text-lg">One Last Thing</h3>
+              <p className="mt-3 text-sm text-muted leading-relaxed">
+                A one-time fee of <span className="text-ink font-semibold">₹150</span> applies for your ID card processing and internship certificate — payable once your application is reviewed. No payment is needed right now.
+              </p>
+              <p className="mt-3 text-sm text-cyan font-medium">Thank you for registering with Shrandha Labs!</p>
+              <div className="mt-6 flex gap-3">
+                <button onClick={() => setShowConfirm(false)} className="flex-1 rounded-full glass px-4 py-2.5 text-sm">Back</button>
+                <button onClick={submit} className="flex-1 rounded-full bg-ink text-base px-4 py-2.5 text-sm font-medium hover:bg-cyan transition-colors">
+                  Confirm &amp; Register
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -317,7 +313,23 @@ function ReviewRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+function ComingSoon() {
+  return (
+    <div className="mx-auto max-w-xl px-5 py-28 text-center">
+      <Clock className="w-12 h-12 text-cyan mx-auto" />
+      <h1 className="mt-6 font-display font-semibold text-3xl md:text-4xl">Registrations Opening Soon</h1>
+      <p className="mt-4 text-muted">We&apos;re putting the finishing touches on the next batch. Check back shortly, or follow our socials for the announcement.</p>
+      <div className="mt-8">
+        <Link href="/" className="inline-flex items-center gap-1.5 rounded-full glass px-6 py-3 text-sm hover:border-cyan/40 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to Home
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function Register() {
+  if (!REGISTRATION_OPEN) return <ComingSoon />;
   return (
     <Suspense>
       <RegisterForm />
