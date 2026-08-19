@@ -19,7 +19,7 @@ export default function Contact() {
       <div className="mt-16 grid lg:grid-cols-5 gap-6">
         <div className="lg:col-span-2 space-y-4">
           <Reveal>
-            <a href="https://wa.me/919000000000" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/91" target="_blank" rel="noopener noreferrer">
               <Card className="flex items-center gap-4 hover:border-cyan/40">
                 <div className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center"><MessageCircle className="w-5 h-5 text-cyan" /></div>
                 <div><p className="font-medium">WhatsApp</p><p className="text-sm text-muted">+91 90000 00000</p></div>
@@ -35,10 +35,10 @@ export default function Contact() {
             </a>
           </Reveal>
           <Reveal delay={0.1}>
-            <a href="mailto:hello@shrandhalabs.com">
+            <a href="mailto:admin@shrandhalabs.com">
               <Card className="flex items-center gap-4 hover:border-cyan/40">
                 <div className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center"><Mail className="w-5 h-5 text-cyan" /></div>
-                <div><p className="font-medium">Email</p><p className="text-sm text-muted">hello@shrandhalabs.com</p></div>
+                <div><p className="font-medium">Email</p><p className="text-sm text-muted">admin@shrandhalabs.com</p></div>
               </Card>
             </a>
           </Reveal>
