@@ -12,6 +12,7 @@ const links = [
   { href: "/courses", label: "Courses" },
   { href: "/internship", label: "Internship" },
   { href: "/certificate", label: "Certificate" },
+  { href: "/services", label: "Services" },
   { href: "/testimonials", label: "Testimonials" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
@@ -44,7 +45,7 @@ export function Navbar() {
           <span className="font-display font-semibold text-lg tracking-tight">Shrandha Labs</span>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-7">
           {links.map((l) => (
             <Link
               key={l.href}
