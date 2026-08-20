@@ -10,6 +10,7 @@ const columns = [
       { href: "/internship", label: "Internship" },
       { href: "/certificate", label: "Certificate" },
       { href: "/verify-certificate", label: "Verify Certificate" },
+      { href: "/services", label: "Services" },
       { href: "/register", label: "Register" },
     ],
   },
