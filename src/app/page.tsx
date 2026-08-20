@@ -45,10 +45,9 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={0.25}>
-            <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl">
+            <div className="mt-20 grid grid-cols-3 gap-8 max-w-xl">
               <Stat value="10" label="Domain tracks" />
               <Stat value="3 mo" label="Program length" />
-              <Stat value="₹150" label="Registration fee" />
               <Stat value="100%" label="Remote friendly" />
             </div>
           </Reveal>
