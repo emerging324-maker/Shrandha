@@ -4,23 +4,32 @@ import { Instagram, Linkedin, Mail, Phone } from "lucide-react";
 
 const columns = [
   {
-    title: "Programs",
-    links: [
-      { href: "/courses", label: "All Courses" },
-      { href: "/internship", label: "Internship" },
-      { href: "/certificate", label: "Certificate" },
-      { href: "/verify-certificate", label: "Verify Certificate" },
-      { href: "/services", label: "Services" },
-      { href: "/register", label: "Register" },
-    ],
-  },
-  {
     title: "Company",
     links: [
       { href: "/about", label: "About Us" },
-      { href: "/testimonials", label: "Testimonials" },
-      { href: "/faq", label: "FAQ" },
+      { href: "/industries", label: "Industries" },
+      { href: "/projects", label: "Projects" },
       { href: "/contact", label: "Contact" },
+    ],
+  },
+  {
+    title: "Solutions",
+    links: [
+      { href: "/services", label: "All Solutions" },
+      { href: "/services#website-development", label: "Website Development" },
+      { href: "/services#healthcare", label: "Healthcare Software" },
+      { href: "/services#billing", label: "Billing & Business Software" },
+      { href: "/start-project", label: "Start a Project" },
+    ],
+  },
+  {
+    title: "Internships",
+    links: [
+      { href: "/internship", label: "Internship Program" },
+      { href: "/courses", label: "All Tracks" },
+      { href: "/certificate", label: "Certificate" },
+      { href: "/verify-certificate", label: "Verify Certificate" },
+      { href: "/testimonials", label: "Testimonials" },
     ],
   },
   {
@@ -28,6 +37,7 @@ const columns = [
     links: [
       { href: "/privacy-policy", label: "Privacy Policy" },
       { href: "/terms", label: "Terms of Service" },
+      { href: "/faq", label: "FAQ" },
     ],
   },
 ];
@@ -35,13 +45,13 @@ const columns = [
 export function Footer() {
   return (
     <footer className="relative border-t border-line bg-surface">
-      <div className="mx-auto max-w-7xl px-5 md:px-8 py-16 grid grid-cols-2 md:grid-cols-5 gap-10">
+      <div className="mx-auto max-w-7xl px-5 md:px-8 py-16 grid grid-cols-2 md:grid-cols-6 gap-10">
         <div className="col-span-2">
           <Link href="/" className="flex items-center gap-2 mb-4">
             <Image src="/images/logo-mark.png" alt="Shrandha Labs" width={38} height={38} className="shrink-0" />
             <span className="font-display font-semibold text-lg">Shrandha Labs</span>
           </Link>
-          <p className="text-muted text-sm max-w-xs">Learn. Build. Achieve. Industry-ready internship programs for students who want to build real things, not just certificates.</p>
+          <p className="text-muted text-sm max-w-xs">Technology and software solutions for businesses and institutions, alongside industry-focused internship programs for students.</p>
           <div className="flex items-center gap-3 mt-5">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:text-cyan transition-colors focus-ring" aria-label="Instagram"><Instagram className="w-4 h-4" /></a>
             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:text-cyan transition-colors focus-ring" aria-label="LinkedIn"><Linkedin className="w-4 h-4" /></a>
@@ -61,14 +71,6 @@ export function Footer() {
             </ul>
           </div>
         ))}
-
-        <div>
-          <h4 className="font-mono text-xs tracking-[0.2em] uppercase text-slate mb-4">Reach Us</h4>
-          <ul className="space-y-2.5 text-sm text-muted">
-            <li className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> +91 90000 00000</li>
-            <li className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> hello@shrandhalabs.com</li>
-          </ul>
-        </div>
       </div>
 
       <div className="border-t border-line">
