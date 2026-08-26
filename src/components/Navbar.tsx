@@ -9,12 +9,11 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/about", label: "About" },
-  { href: "/courses", label: "Courses" },
-  { href: "/internship", label: "Internship" },
-  { href: "/certificate", label: "Certificate" },
-  { href: "/services", label: "Services" },
-  { href: "/testimonials", label: "Testimonials" },
-  { href: "/faq", label: "FAQ" },
+  { href: "/services", label: "Solutions" },
+  { href: "/industries", label: "Industries" },
+  { href: "/internship", label: "Internships" },
+  { href: "/projects", label: "Projects" },
+  { href: "/certificate", label: "Certificates" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -45,7 +44,7 @@ export function Navbar() {
           <span className="font-display font-semibold text-lg tracking-tight">Shrandha Labs</span>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-7">
+        <div className="hidden lg:flex items-center gap-6">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -62,10 +61,10 @@ export function Navbar() {
 
         <div className="hidden lg:flex items-center gap-3">
           <Link
-            href="/register"
+            href="/start-project"
             className="group inline-flex items-center gap-1.5 rounded-full bg-ink text-base px-5 py-2.5 text-sm font-medium hover:bg-cyan transition-colors focus-ring"
           >
-            Register Now
+            Start a Project
             <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
@@ -94,10 +93,10 @@ export function Navbar() {
                 </Link>
               ))}
               <Link
-                href="/register"
+                href="/start-project"
                 className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink text-base px-5 py-3 text-sm font-medium"
               >
-                Register Now <ArrowUpRight className="w-4 h-4" />
+                Start a Project <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
           </motion.div>
