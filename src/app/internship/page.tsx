@@ -4,12 +4,12 @@ import { Reveal, Eyebrow, SectionHeading, Card, Button } from "@/components/ui";
 import { Rocket, ClipboardCheck, Users2, FileCheck2, Award, Star, FileText, Trophy, ArrowUpRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Internship",
-  description: "3-month industry-ready internship program — live projects, weekly assignments, mentor reviews, certificate, and recognition for consistency.",
+  title: "Internships",
+  description: "3-month industry-focused internship program — live projects, weekly task and activity cycles, mentor reviews, certificate, and recognition for consistency.",
 };
 
 const includes = [
-  { icon: Rocket, title: "Live Industry Projects", desc: "Real project briefs modeled on actual client and product work." },
+  { icon: Rocket, title: "Live Industry Projects", desc: "Project briefs modeled on the same practical work Shrandha Labs builds for real clients." },
   { icon: ClipboardCheck, title: "Weekly Task + Activity", desc: "Every Monday: a topic and task. Task due Wednesday, a hands-on activity follows, due Friday." },
   { icon: Users2, title: "Hands-on Sessions", desc: "Guided live sessions with mentors, not pre-recorded lectures only." },
   { icon: FileCheck2, title: "Project Reviews", desc: "Mentor feedback on every submission before you move to the next module." },
@@ -24,10 +24,10 @@ export default function Internship() {
     <div className="mx-auto max-w-7xl px-5 md:px-8 py-20">
       <Reveal>
         <Eyebrow>Duration — 3 Months</Eyebrow>
-        <h1 className="mt-4 font-display font-semibold text-4xl md:text-6xl tracking-tight max-w-3xl">The Internship Program</h1>
-        <p className="mt-6 text-lg text-muted max-w-2xl">One structured, 3-month track across your chosen domain — designed to feel like your first real job, not an extended course.</p>
+        <h1 className="mt-4 font-display font-semibold text-4xl md:text-6xl tracking-tight max-w-3xl">Industry Experience Starts With Building.</h1>
+        <p className="mt-6 text-lg text-muted max-w-2xl">A structured, 3-month track across your chosen domain — built around the same practical technology workflows we use on real projects, not a simulation of them.</p>
         <div className="mt-8">
-          <Link href="/register"><Button className="text-base px-7 py-4">Register Now <ArrowUpRight className="w-4 h-4" /></Button></Link>
+          <Link href="/register"><Button className="text-base px-7 py-4">Apply for Internship <ArrowUpRight className="w-4 h-4" /></Button></Link>
         </div>
       </Reveal>
 
