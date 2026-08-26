@@ -16,15 +16,20 @@ const siteUrl = "https://www.shrandhalabs.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Shrandha Labs — Learn. Build. Achieve.",
+    default: "Shrandha Labs — Technology Solutions & Industry Internship Programs",
     template: "%s | Shrandha Labs",
   },
   description:
-    "Shrandha Labs runs industry-ready internship programs in Full Stack, Cloud, DevOps, AI/ML, Cybersecurity and more — live projects, mentor reviews, and a certificate that means something.",
-  keywords: ["Shrandha Labs", "internship program", "full stack internship", "devops internship", "AWS internship", "student internship India"],
+    "Shrandha Labs builds practical software solutions — websites, billing systems, healthcare platforms, and custom business software — for organizations, while running industry-focused internship programs for students across 10 technology tracks.",
+  keywords: [
+    "Shrandha Labs", "software development company", "custom software development",
+    "website development", "billing software", "healthcare software", "patient management software",
+    "business automation", "AI solutions", "cloud solutions",
+    "student internships", "technology internships", "internship program India",
+  ],
   openGraph: {
-    title: "Shrandha Labs — Learn. Build. Achieve.",
-    description: "Industry-ready internship programs with live projects and mentor reviews.",
+    title: "Shrandha Labs — Technology Solutions & Industry Internship Programs",
+    description: "Practical software solutions for businesses and institutions, alongside industry-focused internship programs for students.",
     url: siteUrl,
     siteName: "Shrandha Labs",
     images: ["/images/logo.png"],
@@ -33,8 +38,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shrandha Labs — Learn. Build. Achieve.",
-    description: "Industry-ready internship programs with live projects and mentor reviews.",
+    title: "Shrandha Labs — Technology Solutions & Industry Internship Programs",
+    description: "Practical software solutions for businesses and institutions, alongside industry-focused internship programs for students.",
     images: ["/images/logo.png"],
   },
   // favicon / apple-icon are auto-detected from src/app/favicon.ico,
@@ -50,11 +55,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "EducationalOrganization",
+              "@type": "Organization",
               name: "Shrandha Labs",
               url: siteUrl,
               logo: `${siteUrl}/images/logo.png`,
-              description: "Industry-ready internship programs in Full Stack, Cloud, DevOps, AI/ML and more.",
+              description: "Technology company building practical software solutions for businesses and institutions, alongside industry-focused internship programs for students.",
+              slogan: "Learn. Build. Achieve.",
             }),
           }}
         />
