@@ -1,7 +1,9 @@
 import { MetadataRoute } from "next";
 
 const routes = [
-  "", "about", "courses", "internship", "testimonials", "faq", "register",
+  "", "about", "services", "industries", "internship", "projects",
+  "certificate", "verify-certificate", "start-project",
+  "courses", "testimonials", "faq", "register",
   "contact", "privacy-policy", "terms",
 ];
 
