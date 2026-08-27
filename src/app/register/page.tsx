@@ -12,7 +12,7 @@ import { courses } from "@/lib/data";
 import { Eyebrow } from "@/components/ui";
 
 // Flip this to true to re-open registration — no other changes needed.
-const REGISTRATION_OPEN = false;
+const REGISTRATION_OPEN = true;
 
 const STEPS = ["Personal", "Academic", "Program", "Review"];
 
