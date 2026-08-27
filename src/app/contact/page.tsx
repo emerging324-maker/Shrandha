@@ -19,7 +19,7 @@ export default function Contact() {
       <div className="mt-16 grid lg:grid-cols-5 gap-6">
         <div className="lg:col-span-2 space-y-4">
           <Reveal>
-            <a href="https://wa.me/91" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/9342311900" target="_blank" rel="noopener noreferrer">
               <Card className="flex items-center gap-4 hover:border-cyan/40">
                 <div className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center"><MessageCircle className="w-5 h-5 text-cyan" /></div>
                 <div><p className="font-medium">WhatsApp</p><p className="text-sm text-muted">93423 11900</p></div>
