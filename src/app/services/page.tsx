@@ -75,21 +75,23 @@ export default function Services() {
       <div className="mt-16 grid md:grid-cols-2 gap-6">
         {solutions.map((s, i) => (
           <Reveal key={s.id} delay={(i % 4) * 0.05}>
-            <Card id={s.id} className="h-full flex flex-col scroll-mt-28">
-              <s.icon className="w-7 h-7 text-cyan" />
-              <h3 className="mt-4 font-display font-semibold text-xl">{s.name}</h3>
-              <p className="mt-2 text-sm text-muted">{s.desc}</p>
-              <ul className="mt-5 space-y-2 flex-1">
-                {s.points.map((p) => (
-                  <li key={p} className="flex items-start gap-2 text-sm text-muted">
-                    <CheckCircle2 className="w-4 h-4 text-cyan shrink-0 mt-0.5" /> {p}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/start-project" className="mt-6 inline-flex items-center gap-1.5 text-sm text-cyan hover:gap-2.5 transition-all">
-                Discuss your requirement <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </Card>
+            <div id={s.id} className="scroll-mt-28 h-full">
+              <Card className="h-full flex flex-col">
+                <s.icon className="w-7 h-7 text-cyan" />
+                <h3 className="mt-4 font-display font-semibold text-xl">{s.name}</h3>
+                <p className="mt-2 text-sm text-muted">{s.desc}</p>
+                <ul className="mt-5 space-y-2 flex-1">
+                  {s.points.map((p) => (
+                    <li key={p} className="flex items-start gap-2 text-sm text-muted">
+                      <CheckCircle2 className="w-4 h-4 text-cyan shrink-0 mt-0.5" /> {p}
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/start-project" className="mt-6 inline-flex items-center gap-1.5 text-sm text-cyan hover:gap-2.5 transition-all">
+                  Discuss your requirement <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </Card>
+            </div>
           </Reveal>
         ))}
       </div>
