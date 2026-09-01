@@ -55,7 +55,7 @@ export default function About() {
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
           <Stat value="7" label="Solution categories" />
           <Stat value="10" label="Internship tracks" />
-          <Stat value="3 mo" label="Program duration" />
+          <Stat value="1–3 mo" label="Program duration" />
           <Stat value="100%" label="Remote friendly" />
         </div>
       </div>
