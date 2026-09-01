@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import {
   ChevronLeft, ChevronRight, UploadCloud, CheckCircle2, LoaderCircle,
-  User, GraduationCap, Rocket, PartyPopper, FileText, Clock, ArrowLeft, IdCard,
+  User, GraduationCap, Rocket, PartyPopper, FileText, Clock, ArrowLeft,
 } from "lucide-react";
 import { courses } from "@/lib/data";
 import { Eyebrow } from "@/components/ui";
@@ -15,11 +15,12 @@ import { Eyebrow } from "@/components/ui";
 const REGISTRATION_OPEN = true;
 
 const STEPS = ["Personal", "Academic", "Program", "Review"];
+const DURATIONS = ["1 Month", "2 Months", "3 Months"];
 
 type FormState = {
   name: string; email: string; phone: string;
   college: string; degree: string; department: string; year: string; city: string; state: string;
-  course: string; linkedin: string; github: string;
+  course: string; duration: string; linkedin: string; github: string;
   resumeFile: File | null;
 };
 
@@ -38,11 +39,10 @@ function RegisterForm() {
   const [submitting, setSubmitting] = useState(false);
   const [progressMsg, setProgressMsg] = useState("");
   const [done, setDone] = useState<{ studentId: string } | null>(null);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [form, setForm] = useState<FormState>({
     name: "", email: "", phone: "",
     college: "", degree: "", department: "", year: "", city: "", state: "",
-    course: params.get("course") || "", linkedin: "", github: "",
+    course: params.get("course") || "", duration: "", linkedin: "", github: "",
     resumeFile: null,
   });
 
@@ -63,6 +63,7 @@ function RegisterForm() {
     }
     if (step === 2) {
       if (!form.course) { toast.error("Select a course."); return false; }
+      if (!form.duration) { toast.error("Select a duration."); return false; }
       if (!form.resumeFile) { toast.error("Please upload your resume (PDF)."); return false; }
     }
     return true;
@@ -76,13 +77,8 @@ function RegisterForm() {
     setStep((s) => Math.max(s - 1, 0));
   }
 
-  function openConfirm() {
-    if (!validateStep()) return;
-    setShowConfirm(true);
-  }
-
   async function submit() {
-    setShowConfirm(false);
+    if (!validateStep()) return;
     setSubmitting(true);
     const scriptUrl = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL;
     if (!scriptUrl) {
@@ -103,7 +99,7 @@ function RegisterForm() {
           name: form.name, email: form.email, phone: form.phone,
           college: form.college, degree: form.degree, department: form.department,
           year: form.year, city: form.city, state: form.state,
-          course: form.course, linkedin: form.linkedin, github: form.github,
+          course: form.course, duration: form.duration, linkedin: form.linkedin, github: form.github,
           resumeFileName: form.resumeFile?.name, resumeBase64, resumeMimeType: form.resumeFile?.type,
         }),
       });
@@ -188,6 +184,23 @@ function RegisterForm() {
                     {courses.map((c) => <option key={c.slug} value={c.name} className="bg-surface">{c.name}</option>)}
                   </select>
                 </div>
+                <div>
+                  <label className="text-xs text-muted font-mono uppercase tracking-widest">Duration</label>
+                  <div className="mt-1.5 flex gap-2">
+                    {DURATIONS.map((d) => (
+                      <button
+                        type="button"
+                        key={d}
+                        onClick={() => update("duration", d)}
+                        className={`flex-1 rounded-xl px-3 py-2.5 text-sm border transition-colors ${
+                          form.duration === d ? "bg-ink text-base border-ink" : "border-line text-muted hover:text-ink"
+                        }`}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <Field label="LinkedIn (optional)" value={form.linkedin} onChange={(v) => update("linkedin", v)} placeholder="linkedin.com/in/you" />
                 <Field label="GitHub (optional)" value={form.github} onChange={(v) => update("github", v)} placeholder="github.com/you" />
                 <FileField label="Resume (PDF)" icon={FileText} file={form.resumeFile} accept="application/pdf" onChange={(f) => update("resumeFile", f)} />
@@ -201,6 +214,7 @@ function RegisterForm() {
                 <ReviewRow label="Phone" value={form.phone} />
                 <ReviewRow label="College" value={form.college} />
                 <ReviewRow label="Course" value={form.course} />
+                <ReviewRow label="Duration" value={form.duration} />
                 <ReviewRow label="Resume" value={form.resumeFile?.name || "—"} />
               </div>
             )}
@@ -222,7 +236,7 @@ function RegisterForm() {
           </button>
         ) : (
           <button
-            onClick={openConfirm}
+            onClick={submit}
             disabled={submitting}
             className="inline-flex items-center gap-1.5 rounded-full bg-ink text-base px-6 py-2.5 text-sm font-medium hover:bg-cyan transition-colors focus-ring disabled:opacity-60"
           >
@@ -234,42 +248,6 @@ function RegisterForm() {
       {submitting && progressMsg && (
         <p className="mt-3 text-xs text-muted text-right font-mono">{progressMsg}</p>
       )}
-
-      {/* Confirmation popup — shown right before the actual submission fires */}
-      <AnimatePresence>
-        {showConfirm && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-5"
-            onClick={() => setShowConfirm(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 16, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.98 }}
-              className="w-full max-w-sm rounded-2xl glass p-7 text-center"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="w-12 h-12 rounded-full bg-amber/10 flex items-center justify-center mx-auto">
-                <IdCard className="w-6 h-6 text-amber" />
-              </div>
-              <h3 className="mt-4 font-display font-semibold text-lg">One Last Thing</h3>
-              <p className="mt-3 text-sm text-muted leading-relaxed">
-                A one-time fee of <span className="text-ink font-semibold">₹150</span> applies for your ID card processing and internship certificate — payable once your application is reviewed. No payment is needed right now.
-              </p>
-              <p className="mt-3 text-sm text-cyan font-medium">Thank you for registering with Shrandha Labs!</p>
-              <div className="mt-6 flex gap-3">
-                <button onClick={() => setShowConfirm(false)} className="flex-1 rounded-full glass px-4 py-2.5 text-sm">Back</button>
-                <button onClick={submit} className="flex-1 rounded-full bg-ink text-base px-4 py-2.5 text-sm font-medium hover:bg-cyan transition-colors">
-                  Confirm &amp; Register
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
