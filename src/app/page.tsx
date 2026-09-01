@@ -174,7 +174,7 @@ export default function Home() {
           </Reveal>
           <Reveal delay={0.1}>
             <div className="rounded-2xl glass p-8 grid grid-cols-2 gap-8">
-              <Stat value="3 mo" label="Program length" />
+              <Stat value="1–3 mo" label="Program length" />
               <Stat value="10" label="Technology tracks" />
               <Stat value="Weekly" label="Mentor reviews" />
               <Stat value="100%" label="Project-based" />
