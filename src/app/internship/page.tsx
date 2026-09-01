@@ -5,7 +5,7 @@ import { Rocket, ClipboardCheck, Users2, FileCheck2, Award, Star, FileText, Trop
 
 export const metadata: Metadata = {
   title: "Internships",
-  description: "3-month industry-focused internship program — live projects, weekly task and activity cycles, mentor reviews, certificate, and recognition for consistency.",
+  description: "Flexible 1 to 3-month industry-focused internship program — live projects, weekly task and activity cycles, mentor reviews, certificate, and recognition for consistency.",
 };
 
 const includes = [
@@ -23,9 +23,9 @@ export default function Internship() {
   return (
     <div className="mx-auto max-w-7xl px-5 md:px-8 py-20">
       <Reveal>
-        <Eyebrow>Duration — 3 Months</Eyebrow>
+        <Eyebrow>Flexible Duration — 1 to 3 Months</Eyebrow>
         <h1 className="mt-4 font-display font-semibold text-4xl md:text-6xl tracking-tight max-w-3xl">Industry Experience Starts With Building.</h1>
-        <p className="mt-6 text-lg text-muted max-w-2xl">A structured, 3-month track across your chosen domain — built around the same practical technology workflows we use on real projects, not a simulation of them.</p>
+        <p className="mt-6 text-lg text-muted max-w-2xl">A structured internship across your chosen domain — pick a 1, 2, or 3-month track built around the same practical technology workflows we use on real projects, not a simulation of them.</p>
         <div className="mt-8">
           <Link href="/register"><Button className="text-base px-7 py-4">Apply for Internship <ArrowUpRight className="w-4 h-4" /></Button></Link>
         </div>
@@ -66,27 +66,24 @@ export default function Internship() {
           ))}
         </div>
         <Reveal delay={0.2}>
-          <p className="mt-6 text-sm text-muted">This cycle repeats every week for the full 12–13 weeks. All topics, resources, and submission instructions are shared in your batch&apos;s WhatsApp group — that&apos;s your main channel for updates throughout the program.</p>
+          <p className="mt-6 text-sm text-muted">This cycle repeats every week for your chosen duration — 1, 2, or 3 months. All topics, resources, and submission instructions are shared in your batch&apos;s WhatsApp group — that&apos;s your main channel for updates throughout the program.</p>
         </Reveal>
       </div>
 
       <div className="mt-24">
-        <SectionHeading eyebrow="Program Length" title="12–13 weeks, start to finish" />
-        <div className="mt-12 space-y-4">
+        <SectionHeading eyebrow="Choose Your Duration" title="1, 2, or 3 months — your pace." />
+        <div className="mt-12 grid md:grid-cols-3 gap-5">
           {[
-            { phase: "Weeks 1–2", title: "Foundations", desc: "Core concepts for your track, environment setup, first weekly cycle." },
-            { phase: "Weeks 3–10", title: "Build Phase", desc: "Weekly topic → task → activity cycles, with mentor review on every submission." },
-            { phase: "Weeks 11–12", title: "Project Depth", desc: "Extend your strongest work, handle edge cases, polish for a portfolio-ready result." },
-            { phase: "Week 12–13", title: "Wrap-up", desc: "Final review, certificate issuance, and recognition for top and consistent performers." },
+            { phase: "1 Month", title: "Foundations", desc: "Core concepts for your track, environment setup, and a first weekly build cycle." },
+            { phase: "2 Months", title: "Foundations + Build", desc: "Everything in the 1-month track, plus deeper weekly topic → task → activity cycles with mentor review." },
+            { phase: "3 Months", title: "Full Track", desc: "The complete program — foundations, build phase, project depth, and a final wrap-up with certificate issuance." },
           ].map((s, i) => (
             <Reveal key={s.phase} delay={i * 0.06}>
-              <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-8 rounded-2xl glass p-6">
-                <span className="font-mono text-xs text-cyan tracking-widest md:w-28 shrink-0">{s.phase}</span>
-                <div>
-                  <h3 className="font-display font-semibold text-lg">{s.title}</h3>
-                  <p className="text-sm text-muted mt-1">{s.desc}</p>
-                </div>
-              </div>
+              <Card className="h-full">
+                <span className="font-mono text-xs text-cyan tracking-widest">{s.phase}</span>
+                <h3 className="mt-3 font-display font-semibold text-lg">{s.title}</h3>
+                <p className="text-sm text-muted mt-2 leading-relaxed">{s.desc}</p>
+              </Card>
             </Reveal>
           ))}
         </div>
